@@ -4,23 +4,16 @@ const PORT = 8080; // default port 8080
 
 function generateRandomString() {
   let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-  charactersLength = characters.length;
+  let charactersLength = characters.length;
+  let result = '';
   for (let i = 0; i < 6; i++){
-    result += characters.charAt(Math.floor(Math.random() * charactersLengt))
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
   return result;
 }
 
-
-
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  // console.log(generateRandomString());
-  res.send(console.log("Ok"));         // Respond with 'Ok' (we will replace this)
-});
 
 app.set("view engine", "ejs");
 
@@ -31,6 +24,12 @@ const urlDatabase = {
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
+});
+
+app.post("/urls", (req, res) => {
+  // console.log(req.body);  // Log the POST request body to the console
+  urlDatabase[generateRandomString()] = req.body.longURL;
+  res.redirect('/urls/');
 });
 
 app.get("/", (req, res) => {
@@ -54,6 +53,12 @@ app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
+
+app.get("/u/:shortURL", (req, res) => {
+   const shortUrl = req.params.shortURL;
+  const longUrl = urlDatabase[shortUrl];
+  res.redirect(urlDatabase[req.params.shortURL]);
+ });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
