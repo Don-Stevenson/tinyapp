@@ -11,7 +11,7 @@ function generateRandomString() {
   }
   return result;
 }
-
+console.log("REFRESH")
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -25,11 +25,22 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+  
+app.post("/urls/:shortURL/delete", (req, res) => {
+  console.log("Hello there")
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('http://google.com');
+});
+
+
 app.post("/urls", (req, res) => {
   // console.log(req.body);  // Log the POST request body to the console
   urlDatabase[generateRandomString()] = req.body.longURL;
   res.redirect('/urls/');
 });
+
+
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
